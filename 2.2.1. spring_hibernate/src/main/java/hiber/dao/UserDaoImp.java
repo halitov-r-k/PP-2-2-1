@@ -1,13 +1,13 @@
 package hiber.dao;
 
-import hiber.model.Car;
 import hiber.model.User;
 import org.hibernate.SessionFactory;
+import org.hibernate.query.Query;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
-
 import javax.persistence.TypedQuery;
 import java.util.List;
+
 
 @Repository
 public class UserDaoImp implements UserDao {
@@ -27,17 +27,14 @@ public class UserDaoImp implements UserDao {
       return query.getResultList();
    }
 
-
-   @Override
-   public User findOwner(String model, int series) {
-   /*   TypedQuery<Car> query= sessionFactory
+   public User findUser(String model, int series) {
+      Query query = sessionFactory
               .getCurrentSession()
-              .createQuery("from Car where model = :model and series = :  series")
+              .createQuery(
+                      "from User where car.id = (select id from Car where model = :model and series = :series)")
               .setParameter("model", model)
               .setParameter("series", series);
-      List<Car> findCarList = query.getResultList();*/
-
-      return null;
+      return (User) query.getSingleResult();
    }
 
 }

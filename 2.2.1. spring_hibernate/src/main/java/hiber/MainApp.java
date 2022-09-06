@@ -5,28 +5,25 @@ import hiber.model.Car;
 import hiber.model.User;
 import hiber.service.UserService;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
-
-import java.sql.SQLException;
 import java.util.List;
 
 public class MainApp {
-   public static void main(String[] args) throws SQLException {
+   public static void main(String[] args) /*throws SQLException*/ {
       AnnotationConfigApplicationContext context = 
             new AnnotationConfigApplicationContext(AppConfig.class);
 
       UserService userService = context.getBean(UserService.class);
-      User user1 = new User();
-      user1.setFirstName("User1");
-      user1.setLastName("LastName1");
-      user1.setEmail("user2@mail.ru");
-      Car car1 = new Car();
-      car1.setModel("Madel1");
-      car1.setSeries(1);
-      user1.setCar(car1);
+
+      User user1 = new User("User1", "LastName1", "user1@mail.ru", new Car("Model1", 1));
+      User user2 = new User("User2", "LastName2", "user2@mail.ru", new Car("Model2", 2));
+      User user3 = new User("User3", "LastName3", "user3@mail.ru", new Car("Model3", 3));
+      User user4 = new User("User4", "LastName4", "user4@mail.ru", new Car("Model4", 4));
+      User user5 = new User("User5", "LastName5", "user5@mail.ru", new Car("Model5", 5));
       userService.add(user1);
-     /* userService.add(new User("User2", "Lastname2", "user2@mail.ru"));
-      userService.add(new User("User3", "Lastname3", "user3@mail.ru"));
-      userService.add(new User("User4", "Lastname4", "user4@mail.ru"));*/
+      userService.add(user2);
+      userService.add(user3);
+      userService.add(user4);
+      userService.add(user5);
 
       List<User> users = userService.listUsers();
       for (User user : users) {
@@ -34,9 +31,13 @@ public class MainApp {
          System.out.println("First Name = "+user.getFirstName());
          System.out.println("Last Name = "+user.getLastName());
          System.out.println("Email = "+user.getEmail());
-         System.out.println(user);
+         System.out.printf("Car: id = %s, model = %s, series = %s %n",
+                user.getCar().getId(), user.getCar().getModel(),user.getCar().getSeries());
       }
-
+      String model = "Model1";
+      int series = 1;
+      User user = userService.findUser(model, series);
+      System.out.printf("User with Car-model = %s, Car-model-series = %s has User-name = %s. %n", model, series, user.getFirstName());
       context.close();
    }
 }
